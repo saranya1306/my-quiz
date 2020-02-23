@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz - Home Page</title>
+</head>
+<body>
+<h1>Welcome to Quiz World</h1>
+{% comment %} <button type="button" href="{% url 'get_mcq' 1 %}">Take a Quiz</button> {% endcomment %}
+<a class="btn" href="{% url 'get_mcq' 1 %}">Take a Quiz</a>
+</body>
+</html>

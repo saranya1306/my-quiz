@@ -9,11 +9,16 @@ LEVEL_CHOICES = (
     (5, '5'),
 )
 
+class CategorY(models.Model):
+    category_name = models.CharField(max_length=50)
 
-# Create your models here.
+    def __str__(self):
+        return self.category_name
+
 class Questions(models.Model):
+
     question = models.CharField(max_length = 200, null = False,blank = False)
-    level_no = models.CharField(choices=LEVEL_CHOICES,default = 1,blank=True,max_length=5)
+    level_no = models.IntegerField(choices=LEVEL_CHOICES,default = 1,blank=True)
     is_repeated = models.BooleanField(blank=False,
                                 default=False,
                                 help_text="Is this a repeated question?")
@@ -38,8 +43,8 @@ class Answers(models.Model):
 
 class Level(models.Model):
     # Add a user_id field will be linked to this
-    score = models.PositiveIntegerField(default = 0,blank=True,validators=[MinValueValidator(1), MaxValueValidator(100)])
-    level_flag = models.PositiveIntegerField(default=1,blank = False,validators=[MinValueValidator(1), MaxValueValidator(5)])
+    score = models.PositiveIntegerField(default = 0,blank=True,validators=[MinValueValidator(0), MaxValueValidator(100)])
+    level_flag = models.PositiveIntegerField(default=1,blank = False,validators=[MinValueValidator(0), MaxValueValidator(6)])
 
     def track_score_and_level(self,is_correct):
         if is_correct is True:
