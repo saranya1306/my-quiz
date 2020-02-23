@@ -1,36 +1,39 @@
-from django.shortcuts import render
-
-# Create your views here.
-from django.views import generic
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.core.urlresolvers import reverse_lazy
-
-# Create your views here.
+from .forms import AnswerForm
+from django.shortcuts import render,redirect
+import random
 from quiz.models import *
 
-# view for the index page
-class IndexView(generic.ListView):
-    # name of the object to be used in the index.html
-    context_object_name = 'product_list'
-    template_name = 'modelforms/index.html'
 
-    def get_queryset(self):
-        return Product.objects.all()
+def validate_mcq(request,question_id = None):
+    print("in the main")
+    score_update = Level.objects.get(id=1)
+    # if request.method == "POST":
+    print("In Post method")
+    get_question = Questions.objects.get(id = question_id)
+    get_answer = Answers.objects.filter(ques=get_question)
+    user_response = request.POST.get("answer")
+    if random.choice(get_answer).right_answer == user_response:
+        print("In Validation")
+        get_question.is_repeated = True
+        get_question.is_correct = True
+        get_question.save()
+        level_info = score_update.track_score_and_level(get_question.is_correct)
 
-# view for the product entry page
-class ProductEntry(CreateView):
-    model = Product
-    # the fields mentioned below become the entry rows in the generated form
-    fields = ['product_title', 'product_price', 'product_desc']
+        # if questions is repeated=false is 10 then tell it's done and display the score else share the level info
+        return redirect('get_mcq', level_num=level_info)
+    else:
+        get_question.is_repeated = True
+        get_question.save()
+        level_info = score_update.track_score_and_level(get_question.is_correct)
 
-# view for the product update page
-class ProductUpdate(UpdateView):
-    model = Product
-    # the fields mentioned below become the entyr rows in the update form
-    fields = ['product_title', 'product_price', 'product_desc']
+        # if questions is repeated=false is 10 then tell it's done and display the score else share the level info
+        return redirect('get_mcq', level_num=level_info)
 
-# view for deleting a product entry
-class ProductDelete(DeleteView):
-    model = Product
-    # the delete button forwards to the url mentioned below.
-    success_url = reverse_lazy('modelforms:index')
+    return True
+
+
+def get_mcq(request,level_num = None):
+    score_info = Level.objects.all()
+    question = random.choice(Questions.objects.filter(level_no=level_num, is_repeated=False))
+    options = Answers.objects.filter(ques=question)
+    return render(request, 'quiz/index.html', {'data': options,'ques':question, 'score':score_info})
