@@ -1,5 +1,6 @@
 from .forms import AnswerForm
 from django.shortcuts import render,redirect
+from django.http import HttpResponse
 import random
 from quiz.models import *
 
@@ -33,7 +34,10 @@ def validate_mcq(request,question_id = None):
 
 
 def get_mcq(request,level_num = None):
-    score_info = Level.objects.all()
-    question = random.choice(Questions.objects.filter(level_no=level_num, is_repeated=False))
-    options = Answers.objects.filter(ques=question)
-    return render(request, 'quiz/index.html', {'data': options,'ques':question, 'score':score_info})
+    if Questions.objects.filter(is_repeated=True).count() > 10:
+        return HttpResponse('<h1>You are done with the Quiz</h1>')
+    else:
+        score_info = Level.objects.all()
+        question = random.choice(Questions.objects.filter(level_no=level_num, is_repeated=False))
+        options = Answers.objects.filter(ques=question)
+        return render(request, 'quiz/index.html', {'data': options,'ques':question, 'score':score_info})
