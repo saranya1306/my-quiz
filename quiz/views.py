@@ -8,6 +8,10 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.contrib.auth.decorators import login_required
 
+def index(request):
+    lvl = Level.objects.get(user=request.user)
+    return render(request, 'quiz/index.html',{'level':lvl})
+
 def signup(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -35,9 +39,8 @@ def login_request(request):
                 login(request, user)
                 messages.info(request, f"You are now logged in as {username}")
                 lvl = Level.objects.get_or_create(user=user,level_flag=1)
-                # if lvl[1]:
-                #     return redirect(settings.LOGIN_REDIRECT_URL,level_id=lvl[0].id)
-                return render(request,'quiz/home.html',{'level':lvl[0]})
+                return redirect(settings.LOGIN_REDIRECT_URL,level_id=lvl[0].id)
+                # return render(request,'quiz/home.html',{'level':lvl[0]})
             else:
                 messages.error(request, "Invalid username or password.")
         else:
@@ -54,7 +57,8 @@ def logout_request(request):
 
 @login_required(login_url=settings.LOGIN_URL)
 def home(request,level_id):
-    return render(request,'quiz/home.html',{'level_id':level_id})
+    level = Level.objects.get(id=level_id)
+    return render(request,'quiz/home.html',{'level':level})
 
 @login_required(login_url=settings.LOGIN_URL)
 def validate_mcq(request,level_id,question_id=None):
@@ -66,8 +70,8 @@ def validate_mcq(request,level_id,question_id=None):
         get_question.is_repeated = True
         get_question.is_correct = True
         get_question.save()
-        score_update.score = score_update.score+1
-        # level_info = score_update.track_score_and_level(get_question.is_correct)
+        if score_update.score > 0:
+            score_update.score = score_update.score+1
         if score_update.level_flag == 0:
             score_update.level_flag = 1
         elif score_update.level_flag >= 5:
@@ -79,13 +83,15 @@ def validate_mcq(request,level_id,question_id=None):
     else:
         get_question.is_repeated = True
         get_question.save()
+        if score_update.score > 0:
+            score_update.score = score_update.score-1
+        score_update.level_flag = score_update.level_flag-1
         # level_info = score_update.track_score_and_level(get_question.is_correct)
         if score_update.level_flag == 0:
-            level_info = 1
-        elif score_update.level_flag >= 5:
+            score_update.level_flag = 1
+        if score_update.level_flag >= 5:
             score_update.level_flag = 5
-        else:
-            score_update.level_flag = score_update.level_flag-1
+            
         score_update.save()
         return redirect('get_mcq', level_id=score_update.id)
 

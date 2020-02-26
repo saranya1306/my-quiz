@@ -65,17 +65,17 @@ class Level(models.Model):
     score = models.PositiveIntegerField(default=0,null=True,validators=[MinValueValidator(0), MaxValueValidator(100)])
     level_flag = models.PositiveIntegerField(default=1,null=False,blank=False,validators=[MinValueValidator(0), MaxValueValidator(6)])
 
-    def track_score_and_level(self,is_correct):
-        if is_correct is True:
-            self.score = self.score + 1
-            self.level_flag = self.level_flag + 1
-            self.save()
-            return self.level_flag
-        else:
-            self.score = self.score
-            self.level_flag = self.level_flag - 1
-            self.save()
-            return self.level_flag
+    # def track_score_and_level(self,is_correct):
+    #     if is_correct is True:
+    #         self.score = self.score + 1
+    #         self.level_flag = self.level_flag + 1
+    #         self.save()
+    #         return self.level_flag
+    #     else:
+    #         self.score = self.score
+    #         self.level_flag = self.level_flag - 1
+    #         self.save()
+    #         return self.level_flag
 
     def __str__(self):
         return str(self.score)

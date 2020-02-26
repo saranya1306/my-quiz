@@ -11,7 +11,10 @@
       Hi {{ user.username }}!
       <a href="{% url 'logout' %}">logout</a>
     {% else %}
-      <a href="{% url 'login' %}">login</a>
+        <a href="{% url 'signup' %}">SignUp</a>
+        <br>
+        <p>OR</p>
+        <a href="{% url 'login' %}">Login</a>
     {% endif %}
   </header>
   <hr>

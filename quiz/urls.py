@@ -5,6 +5,7 @@ from django.urls import path,include
 from quiz import views
 
 urlpatterns = [
+    path('',views.index, name='index'),
     path('home/<int:level_id>',views.home, name='home'),
     path('login/', views.login_request, name='login'),
     path('logout/', views.logout_request, name='logout'),
