@@ -72,7 +72,7 @@ def validate_mcq(request,level_id,question_id=None):
         get_question.is_repeated = True
         get_question.is_correct = True
         get_question.save()
-        if score_update.score > 0:
+        if score_update.score >= 0:
             score_update.score = score_update.score+1
         if score_update.level_flag == 0:
             score_update.level_flag = 1

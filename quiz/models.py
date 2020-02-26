@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator 
+import glob
+import os
+import csv
 
 LEVEL_CHOICES = (
     (1, '1'),
@@ -17,16 +20,15 @@ class PopulateData(models.Model):
     def save(self, *args,**kwargs):
         all_files = glob.glob("media/files/*")
         latest_file = max(all_files, key=os.path.getctime)
-        with open(latest_file) as f:
-            lis = [line.split() for line in f]        # create a list of lists
-            for i, x in enumerate(lis):              #print the list items 
-                category,que,level,ans1,ans2,ans3,ans4,answ_true, = x[0].split(",")
-                cat = Category.objects.create(category_name=category)
-                ques = Questions.objects.create(category_type=cat,question=que,level_no=level)
-                Answers.objects.create(ques=ques,answer_options=ans1,right_answer=answ_true)
-                Answers.objects.create(ques=ques,answer_options=ans2,right_answer=answ_true)
-                Answers.objects.create(ques=ques,answer_options=ans3,right_answer=answ_true)
-                Answers.objects.create(ques=ques,answer_options=ans4,right_answer=answ_true)
+        with open(latest_file, 'r') as f:
+            csvreader = csv.reader(f)
+            for row in csvreader:
+                category,que,level,ans1,ans2,ans3,answ_true = row
+                cat = Category.objects.get_or_create(category_name=category)
+                ques = Questions.objects.create(category_type=cat[0],question=que,level_no=level)
+                a1 = Answers.objects.create(ques=ques,answer_options=ans1,right_answer=answ_true)
+                a2 = Answers.objects.create(ques=ques,answer_options=ans2,right_answer=answ_true)
+                a3 = Answers.objects.create(ques=ques,answer_options=ans3,right_answer=answ_true)
 
 class Category(models.Model):
     category_name = models.CharField(max_length=50)
