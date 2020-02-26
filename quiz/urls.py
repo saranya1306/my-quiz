@@ -6,10 +6,11 @@ from quiz import views
 
 urlpatterns = [
     path('',views.index, name='index'),
-    path('home/<int:level_id>',views.home, name='home'),
+    path('signup/', views.signup, name='signup'),
     path('login/', views.login_request, name='login'),
     path('logout/', views.logout_request, name='logout'),
+    path('home/<int:level_id>',views.home, name='home'),
     path('get/<int:level_id>/', views.get_mcq, name='get_mcq'),
     path('post/<int:level_id>/<int:question_id>/', views.validate_mcq, name='validate_mcq'),
-    path('signup/', views.signup, name='signup'),
+    # path('score/<int:level_id>', views.score, name='score'),
 ]

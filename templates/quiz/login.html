@@ -9,6 +9,8 @@
     {{ form.as_p }}
     <button type="submit">Login</button>
     </form>
+    <p>Not a user?</p>
+    <a class="btn" href="{% url 'signup' %}">SignUp</a>
 {% endblock %}
 
 {% comment %} <!DOCTYPE html>

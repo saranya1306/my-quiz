@@ -20,9 +20,9 @@ class PopulateData(models.Model):
         with open(latest_file) as f:
             lis = [line.split() for line in f]        # create a list of lists
             for i, x in enumerate(lis):              #print the list items 
-                category,que,ans1,ans2,ans3,ans4,answ_true = x[0].split(",")
+                category,que,level,ans1,ans2,ans3,ans4,answ_true, = x[0].split(",")
                 cat = Category.objects.create(category_name=category)
-                ques = Questions.objects.create(category_type=cat,question=que)
+                ques = Questions.objects.create(category_type=cat,question=que,level_no=level)
                 Answers.objects.create(ques=ques,answer_options=ans1,right_answer=answ_true)
                 Answers.objects.create(ques=ques,answer_options=ans2,right_answer=answ_true)
                 Answers.objects.create(ques=ques,answer_options=ans3,right_answer=answ_true)
@@ -37,7 +37,7 @@ class Category(models.Model):
 class Questions(models.Model):
     category_type = models.ForeignKey(Category, on_delete=models.CASCADE)
     question = models.CharField(max_length = 200, null = False,blank = False)
-    level_no = models.IntegerField(choices=LEVEL_CHOICES,default = 1,blank=True)
+    level_no = models.IntegerField(choices=LEVEL_CHOICES,default = 1,blank=False,null=False)
     is_repeated = models.BooleanField(blank=False,
                                 default=False,
                                 help_text="Is this a repeated question?")

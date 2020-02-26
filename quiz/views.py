@@ -8,6 +8,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.contrib.auth.decorators import login_required
 
+@login_required(login_url=settings.LOGIN_URL)
 def index(request):
     lvl = Level.objects.get(user=request.user)
     return render(request, 'quiz/index.html',{'level':lvl})
@@ -48,6 +49,7 @@ def login_request(request):
     form = AuthenticationForm()
     return render(request,'quiz/login.html', {'form': form})
 
+@login_required(login_url=settings.LOGIN_URL)
 def logout_request(request):
     logout(request)
     messages.info(request, "Logged out successfully!")
