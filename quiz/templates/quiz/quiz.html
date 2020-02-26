@@ -6,7 +6,7 @@
 </head>
 <body>
 <h1>This Quiz Page</h1>
-<form method="POST" class="post-form" action="{% url 'validate_mcq' ques.id %}">
+<form method="POST" class="post-form" action="{% url 'validate_mcq' sco.id ques.id %}">
     {% csrf_token %}
     <p>Question:{{ques.question}}</p>
     {% for choice in data %}
