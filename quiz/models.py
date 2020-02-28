@@ -23,12 +23,13 @@ class PopulateData(models.Model):
         with open(latest_file, 'r') as f:
             csvreader = csv.reader(f)
             for row in csvreader:
-                category,que,level,ans1,ans2,ans3,answ_true = row
+                category,que,level,ans1,ans2,ans3,ans4,answ_true = row
                 cat = Category.objects.get_or_create(category_name=category)
                 ques = Questions.objects.create(category_type=cat[0],question=que,level_no=level)
                 a1 = Answers.objects.create(ques=ques,answer_options=ans1,right_answer=answ_true)
                 a2 = Answers.objects.create(ques=ques,answer_options=ans2,right_answer=answ_true)
                 a3 = Answers.objects.create(ques=ques,answer_options=ans3,right_answer=answ_true)
+                a4 = Answers.objects.create(ques=ques,answer_options=ans4,right_answer=answ_true)
 
 class Category(models.Model):
     category_name = models.CharField(max_length=50)
