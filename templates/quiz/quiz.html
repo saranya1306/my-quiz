@@ -3,19 +3,33 @@
 {% block title %}Quiz Form{% endblock %}
 
 {% block content %}
-    <h1>This Quiz Page</h1>
-    <form method="POST" class="post-form" action="{% url 'validate_mcq' sco.id ques.id %}">
-        {% csrf_token %}
-        <p>Question:{{ques.question}}</p>
-        {% for choice in data %}
-            <input type="radio" id="{{ choice.id }}" name="answer" value="{{ choice.answer_options }}">
-            <label for="{{ choice.id }}">{{ choice.answer_options }}</label>
-        {% endfor %}
+<div class="container-fluid">
+    <div class="jumbotron">
+        <div class="row">
+            <div class="col-md-8">
+                <h2>{{ques.question}}</h2>
+            </div>
+            <div class="col-md-4 text-right">
+                <h3><small>Questions Left:{{ques_left}}</small></h3>
+            </div>
+        </div>
+        <hr class="paper">
+        <h3><small>Select an option:</small></h3>
+        <form method="POST" class="post-form" action="{% url 'validate_mcq' sco.id ques.id %}">
+            {% csrf_token %}
+            {% for choice in data %}
+                <input type="radio" id="{{ choice.id }}" name="answer" value="{{ choice.answer_options }}">
+                <label for="{{ choice.id }}"><p>{{ choice.answer_options }}</p></label>
+                <br>
+            {% endfor %}
         
-        <button type="submit" class="save btn btn-default">Submit</button>
-    </form>
+            <button type="submit" class="save btn btn-success">Submit</button>
+        </form>
+    </div>
+{% comment %} 
     <p>Current Score:{{sco.score}}</p>
-    <p>Current Level:{{sco.level_flag}}</p>
+    <p>Current Level:{{sco.level_flag}}</p> {% endcomment %}
+</div>
 {% endblock %}
 
 

@@ -64,6 +64,7 @@ class Answers(models.Model):
 
 class Level(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    prev_score = models.PositiveIntegerField(default=0,null=True,validators=[MinValueValidator(0), MaxValueValidator(100)])
     score = models.PositiveIntegerField(default=0,null=True,validators=[MinValueValidator(0), MaxValueValidator(100)])
     level_flag = models.PositiveIntegerField(default=1,null=False,blank=False,validators=[MinValueValidator(0), MaxValueValidator(6)])
 

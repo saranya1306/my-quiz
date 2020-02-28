@@ -12,5 +12,6 @@ urlpatterns = [
     path('home/<int:level_id>',views.home, name='home'),
     path('get/<int:level_id>/', views.get_mcq, name='get_mcq'),
     path('post/<int:level_id>/<int:question_id>/', views.validate_mcq, name='validate_mcq'),
-    # path('score/<int:level_id>', views.score, name='score'),
+    path('score/<int:level_id>', views.score, name='score'),
+    path('quiz_again/<int:level_id>', views.quiz_again, name='quiz_again'),
 ]

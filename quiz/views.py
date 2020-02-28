@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 @login_required(login_url=settings.LOGIN_URL)
 def index(request):
     lvl = Level.objects.get(user=request.user)
-    return render(request, 'quiz/index.html',{'level':lvl})
+    return redirect('home', level_id=lvl.id)
 
 def signup(request):
     if request.method == 'POST':
@@ -20,8 +20,8 @@ def signup(request):
             form.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            login(request, user)
+            # user = authenticate(username=username, password=raw_password)
+            # login(request, user)
             return redirect('login')
     else:
         form = UserCreationForm()
@@ -54,7 +54,7 @@ def logout_request(request):
     logout(request)
     messages.info(request, "Logged out successfully!")
     q = Questions.objects.filter(is_repeated=True).update(is_repeated=False,is_correct=False)
-    l = Level.objects.all().update(level_flag=1)
+    l = Level.objects.all().update(level_flag=1,score=0)
     return redirect('login')
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -73,7 +73,7 @@ def validate_mcq(request,level_id,question_id=None):
         get_question.is_correct = True
         get_question.save()
         if score_update.score >= 0:
-            score_update.score = score_update.score+1
+            score_update.score = score_update.prev_score = score_update.score+1
         if score_update.level_flag == 0:
             score_update.level_flag = 1
         elif score_update.level_flag >= 5:
@@ -93,7 +93,7 @@ def validate_mcq(request,level_id,question_id=None):
             score_update.level_flag = 1
         if score_update.level_flag >= 5:
             score_update.level_flag = 5
-            
+        
         score_update.save()
         return redirect('get_mcq', level_id=score_update.id)
 
@@ -107,4 +107,16 @@ def get_mcq(request,level_id):
     else:
         question = random.choice(Questions.objects.filter(level_no=score_info.level_flag, is_repeated=False))
         options = Answers.objects.filter(ques=question)
-        return render(request, 'quiz/quiz.html', {'data': options,'ques':question, 'sco':score_info})
+        ques_left = 10 - Questions.objects.filter(is_repeated=True).count()
+        return render(request, 'quiz/quiz.html', {'data': options,'ques':question, 'sco':score_info,'ques_left':ques_left})
+
+@login_required(login_url=settings.LOGIN_URL)
+def score(request,level_id):
+    score_info = Level.objects.get(id=level_id)
+    return render(request, 'quiz/scorecard.html', {'score_info':score_info})
+
+@login_required(login_url=settings.LOGIN_URL)
+def quiz_again(request,level_id):
+    q = Questions.objects.filter(is_repeated=True).update(is_repeated=False,is_correct=False)
+    l = Level.objects.all().update(level_flag=1,score=0)
+    return redirect('get_mcq', level_id=level_id)

@@ -1,20 +1,15 @@
-{% comment %} <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>ScoreBoard</title>
-</head>
-<body>
-<h1>Score Card Page</h1>
-<p>Current Score:{{score_info.score}}</p>
-</body>
-</html> {% endcomment %}
-
 {% extends 'quiz/base.html' %}
 
 {% block title %}ScoreBoard{% endblock %}
 
 {% block content %}
-    <h1>Score Card Page</h1>
-    <p>Current Score:{{score_info.score}}</p>
+<div class="container-fluid">
+    <div class="jumbotron">
+        <h1>My Score Card</h1>
+        <hr class="paper">
+        <h3>Your Score:<mark style="color:green">{{score_info.score}}</mark></h3>
+        <div class="row text-center">
+            <a role="button" class="btn btn-info" href="{% url 'quiz_again' score_info.id %}">Take Quiz again</a>
+        </div>
+    </div>
 {% endblock %}
