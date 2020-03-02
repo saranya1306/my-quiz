@@ -18,6 +18,7 @@ class PopulateData(models.Model):
     # created_datetime = models.DateTimeField(default=datetime.now)
 
     def save(self, *args,**kwargs):
+        super().save(*args, **kwargs)
         all_files = glob.glob("media/files/*")
         latest_file = max(all_files, key=os.path.getctime)
         with open(latest_file, 'r') as f:
@@ -30,7 +31,7 @@ class PopulateData(models.Model):
                 a2 = Answers.objects.create(ques=ques,answer_options=ans2,right_answer=answ_true)
                 a3 = Answers.objects.create(ques=ques,answer_options=ans3,right_answer=answ_true)
                 a4 = Answers.objects.create(ques=ques,answer_options=ans4,right_answer=answ_true)
-
+        # super().save(*args, **kwargs)
 class Category(models.Model):
     category_name = models.CharField(max_length=50)
 

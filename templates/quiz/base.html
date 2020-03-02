@@ -117,4 +117,21 @@ input {max-width: 12em};
     </div>
 
 </body>
+<script type="text/javascript">
+    $(function ()
+    {
+        $("#quiz").on('submit', function ()
+        {
+            if (document.getElementById("{{ choice.id }}").checked)
+            {
+                $("#quiz").submit();
+            }
+            else
+            {
+                e.preventDefault();
+                alert('Please check the box before submitting the form');
+            }
+        });
+    });
+</script>
 </html>
