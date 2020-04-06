@@ -1,4 +1,4 @@
-# QUIZ APP using Django Framework
+# Quiz App using Django Framework
 
 ## Description:
 A simple django based quiz app web application with a basic html template as frontend.
